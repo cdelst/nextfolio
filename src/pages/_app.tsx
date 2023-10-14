@@ -2,6 +2,8 @@ import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { type AppType } from "next/app";
 
+import { FiberProvider } from "its-fine";
+
 import { api } from "app/utils/api";
 
 import "app/styles/globals.css";
@@ -12,7 +14,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <Component {...pageProps} />
+      <FiberProvider>
+          <Component {...pageProps} />
+      </FiberProvider>
     </SessionProvider>
   );
 };

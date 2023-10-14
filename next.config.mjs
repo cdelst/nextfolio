@@ -20,6 +20,7 @@ const config = {
   images: {
     domains: ["dplncba8x71xi.cloudfront.net"],
   },
+  transpilePackages: ["three"],
 };
 
 export default config;
