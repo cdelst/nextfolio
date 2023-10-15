@@ -108,15 +108,15 @@ export default function Home() {
     <>
       <Suspense fallback={null}>
         <Busts speed={speed} count={modelCount} />
+        <div className="absolute left-0 top-40 flex w-full flex-col items-center gap-4  md:top-60">
+          <h1 className="text-7xl font-bold text-white drop-shadow-2xl md:text-9xl">
+            Case Delst
+          </h1>
+          <h2 className="text-2xl font-bold text-white md:text-4xl">
+            Software Engineer
+          </h2>
+        </div>
       </Suspense>
-      <div className="absolute left-0 top-40 flex w-full flex-col items-center gap-4  md:top-60">
-        <h1 className="px-5 text-7xl font-bold text-white drop-shadow-2xl md:text-9xl">
-          Case Delst
-        </h1>
-        <h2 className="text-1xl font-bold text-white md:text-4xl">
-          Software Engineer
-        </h2>
-      </div>
     </>
   );
 }
