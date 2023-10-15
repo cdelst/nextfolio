@@ -2,7 +2,13 @@ import * as THREE from "three";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { DepthOfField, EffectComposer } from "@react-three/postprocessing";
-import { Detailed, Environment, useGLTF } from "@react-three/drei";
+import {
+  Detailed,
+  Environment,
+  Scroll,
+  ScrollControls,
+  useGLTF,
+} from "@react-three/drei";
 import { useRef, useState } from "react";
 
 function Bust({ index, z, speed }) {
@@ -109,9 +115,9 @@ export default function Busts({
       <EffectComposer multisampling={0}>
         <DepthOfField
           target={[0, 0, 60]}
-          focalLength={0.5}
-          bokehScale={30}
-          height={500}
+          focalLength={0.8}
+          bokehScale={20}
+          height={700}
         />
       </EffectComposer>
     </Canvas>

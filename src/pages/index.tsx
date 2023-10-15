@@ -8,6 +8,8 @@ import {
   QuadraticBezierLine,
   RandomizedLight,
   RoundedBox,
+  Scroll,
+  ScrollControls,
   Sky,
   Sphere,
   Stage,
@@ -33,6 +35,10 @@ const speedNormalizer = (minWindowSize, maxWindowSize) => {
   const a = 0.5;
   const b = 1;
 
+  if (typeof window === "undefined") {
+    return 0;
+  }
+
   const normalizedSpeed =
     ((b - a) * (window.innerWidth - minWindowSize)) /
       (maxWindowSize - minWindowSize) +
@@ -42,8 +48,12 @@ const speedNormalizer = (minWindowSize, maxWindowSize) => {
 };
 
 const modelCountNormalizer = (minWindowSize, maxWindowSize) => {
-  const a = 10;
-  const b = 20;
+  const a = 20;
+  const b = 40;
+
+  if (typeof window === "undefined") {
+    return 0;
+  }
 
   const normalizedModelCount =
     ((b - a) * (window.innerWidth - minWindowSize)) /
@@ -62,7 +72,9 @@ export default function Home() {
   const { data, isLoading } = api.example.getAllObjectKeys.useQuery();
 
   // Set the speed to the current width of the window
-  const [speed, setSpeed] = useState(0.1);
+  const [speed, setSpeed] = useState(
+    speedNormalizer(minWindowSize, maxWindowSize),
+  );
   const [modelCount, setModelCount] = useState(40);
 
   useEffect(() => {
@@ -91,10 +103,21 @@ export default function Home() {
     console.log(imageLink);
   }
 
+  // Header on top of busts background
   return (
-    <Suspense fallback={null}>
-      <Busts speed={speed} count={modelCount} />
-    </Suspense>
+    <>
+      <Suspense fallback={null}>
+        <Busts speed={speed} count={modelCount} />
+      </Suspense>
+      <div className="absolute left-0 top-40 flex w-full flex-col items-center gap-4  md:top-60">
+        <h1 className="px-5 text-7xl font-bold text-white drop-shadow-2xl md:text-9xl">
+          Case Delst
+        </h1>
+        <h2 className="text-1xl font-bold text-white md:text-4xl">
+          Software Engineer
+        </h2>
+      </div>
+    </>
   );
 }
 
