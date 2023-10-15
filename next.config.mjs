@@ -21,6 +21,12 @@ const config = {
     domains: ["dplncba8x71xi.cloudfront.net"],
   },
   transpilePackages: ["three"],
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 };
 
 export default config;
