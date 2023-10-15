@@ -61,24 +61,31 @@ function Bust({ index, z, speed }) {
   // Using drei's detailed is a nice trick to reduce the vertex count because
   // we don't need high resolution for objects in the distance. The model contains 3 decimated meshes ...
   return (
-    <Detailed ref={ref} distances={[0, 40, 100]}>
+    <Detailed ref={ref} distances={[0, 20, 40, 60, 80]}>
       <mesh
         geometry={nodes.close_up.geometry}
-        material={materials["marble.001"]}
+        material={new THREE.MeshPhysicalMaterial({ color: "#FF00FF" })}
         scale={[3, 3, 3]}
-        position={[0.025, 0.706, 0.515]}
       />
       <mesh
         geometry={nodes.medium.geometry}
-        material={materials["marble.002"]}
+        material={new THREE.MeshPhysicalMaterial({ color: "#00FFFF" })}
+        scale={[7, 7, 7]}
+      />
+      <mesh
+        geometry={nodes.medium.geometry}
+        material={new THREE.MeshPhysicalMaterial({ color: "#E30B5C" })}
         scale={[5, 5, 5]}
-        position={[0.025, 0.706, 0.515]}
       />
       <mesh
         geometry={nodes.far.geometry}
-        material={materials.marble}
-        scale={[5, 5, 5]}
-        position={[0.025, 0.706, 0.515]}
+        material={new THREE.MeshPhysicalMaterial({ color: "#FFB100" })}
+        scale={[6, 6, 6]}
+      />
+      <mesh
+        geometry={nodes.far.geometry}
+        material={new THREE.MeshPhysicalMaterial({ color: "#FF7F50" })}
+        scale={[6, 6, 6]}
       />
     </Detailed>
   );
