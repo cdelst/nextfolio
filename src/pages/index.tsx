@@ -67,9 +67,9 @@ export default function Home() {
   const minWindowSize = 360;
   const maxWindowSize = 1920;
 
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
+  // const hello = api.example.hello.useQuery({ text: "from tRPC" });
 
-  const { data, isLoading } = api.example.getAllObjectKeys.useQuery();
+  // const { data, isLoading } = api.example.getAllObjectKeys.useQuery();
 
   // Set the speed to the current width of the window
   const [speed, setSpeed] = useState(
@@ -86,22 +86,22 @@ export default function Home() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const { data: imageLink, isLoading: isImageLoading } =
-    api.example.getObject.useQuery(
-      {
-        key: data?.[0],
-      },
-      {
-        enabled: data !== undefined,
-      },
-    );
-  if (isLoading || isImageLoading || !imageLink) {
-    return <div>Loading...</div>;
-  }
+  // const { data: imageLink, isLoading: isImageLoading } =
+  //   api.example.getObject.useQuery(
+  //     {
+  //       key: data?.[0],
+  //     },
+  //     {
+  //       enabled: data !== undefined,
+  //     },
+  //   );
+  // if (isLoading || isImageLoading || !imageLink) {
+  //   return <div>Loading...</div>;
+  // }
 
-  if (data) {
-    console.log(imageLink);
-  }
+  // if (data) {
+  //   console.log(imageLink);
+  // }
 
   // Header on top of busts background
   return (
