@@ -31,36 +31,22 @@ import { cx } from "class-variance-authority";
 
 const font = Inconsolata({ subsets: ["latin"] });
 
-const speedNormalizer = (minWindowSize, maxWindowSize) => {
-  const a = 0.5;
-  const b = 1;
-
+const windowNormalizer = (
+  a: number,
+  b: number,
+  minWindowSize: number,
+  maxWindowSize: number,
+) => {
   if (typeof window === "undefined") {
     return 0;
   }
 
-  const normalizedSpeed =
+  const normalizedWindowSize =
     ((b - a) * (window.innerWidth - minWindowSize)) /
       (maxWindowSize - minWindowSize) +
     a;
 
-  return normalizedSpeed;
-};
-
-const modelCountNormalizer = (minWindowSize, maxWindowSize) => {
-  const a = 20;
-  const b = 40;
-
-  if (typeof window === "undefined") {
-    return 0;
-  }
-
-  const normalizedModelCount =
-    ((b - a) * (window.innerWidth - minWindowSize)) /
-      (maxWindowSize - minWindowSize) +
-    a;
-
-  return normalizedModelCount;
+  return normalizedWindowSize;
 };
 
 export default function Home() {
@@ -73,14 +59,16 @@ export default function Home() {
 
   // Set the speed to the current width of the window
   const [speed, setSpeed] = useState(
-    speedNormalizer(minWindowSize, maxWindowSize),
+    windowNormalizer(0.5, 2, minWindowSize, maxWindowSize),
   );
   const [modelCount, setModelCount] = useState(40);
+  const [modelScale, setModelScale] = useState(1);
 
   useEffect(() => {
     const handleResize = () => {
-      setSpeed(speedNormalizer(minWindowSize, maxWindowSize));
-      setModelCount(modelCountNormalizer(minWindowSize, maxWindowSize));
+      setSpeed(windowNormalizer(0.5, 1, minWindowSize, maxWindowSize));
+      setModelCount(windowNormalizer(20, 40, minWindowSize, maxWindowSize));
+      setModelScale(windowNormalizer(0.5, 1, minWindowSize, maxWindowSize));
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -107,14 +95,22 @@ export default function Home() {
   return (
     <>
       <Suspense fallback={null}>
-        <Busts speed={speed} count={modelCount} />
-        <div className="absolute left-0 top-40 flex w-full flex-col items-center gap-4  md:top-60">
-          <h1 className="text-7xl font-bold text-white drop-shadow-2xl md:text-9xl">
-            Case Delst
-          </h1>
-          <h2 className="text-2xl font-bold text-white md:text-4xl">
-            Software Engineer
-          </h2>
+        <div className="fixed left-0 top-0 h-full w-full">
+          <Busts
+            speed={speed}
+            count={modelCount}
+            scaleMultiplier={modelScale}
+          />
+        </div>
+        <div className="flex h-full w-full flex-col items-center justify-center align-middle">
+          <div className=" flex w-fit flex-col items-center gap-4 rounded-xl p-5 shadow-2xl backdrop-blur-sm backdrop-saturate-150 md:top-60 md:p-10">
+            <h1 className="text-5xl font-bold text-white drop-shadow-[0_20px_30px_rgba(0,0,0,0.75)] md:text-9xl">
+              Case Delst
+            </h1>
+            <h2 className="text-2xl font-bold text-white md:text-4xl">
+              Software Engineer
+            </h2>
+          </div>
         </div>
       </Suspense>
     </>

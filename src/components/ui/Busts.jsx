@@ -5,13 +5,15 @@ import { DepthOfField, EffectComposer } from "@react-three/postprocessing";
 import {
   Detailed,
   Environment,
+  GradientTexture,
   Scroll,
   ScrollControls,
   useGLTF,
 } from "@react-three/drei";
 import { useRef, useState } from "react";
 
-function Bust({ index, z, speed }) {
+// MOST OF THIS CODE IS TAKEN FROM https://codesandbox.io/s/2ycs3
+function Bust({ index, z, speed, color, scaleMultiplier = 1 }) {
   const ref = useRef();
   // useThree gives you access to the R3F state model
   const { viewport, camera } = useThree();
@@ -20,7 +22,7 @@ function Bust({ index, z, speed }) {
   // useGLTF is an abstraction around R3F's useLoader(GLTFLoader, url)
   // It can automatically handle draco and meshopt-compressed assets without you having to
   // worry about binaries and such ...
-  const { nodes, materials } = useGLTF("/triple_split.gltf");
+  const { nodes } = useGLTF("/triple_split.gltf");
   // By the time we're here the model is loaded, this is possible through React suspense
 
   // Local component state, it is safe to mutate because it's fixed data
@@ -42,13 +44,13 @@ function Bust({ index, z, speed }) {
     // dt is the delta, the time between this frame and the previous, we can use it to be independent of the screens refresh rate
     // We cap dt at 0.1 because now it can't accumulate while the user changes the tab, it will simply stop
     if (dt < 0.1)
-      ref.current.position.set(
+      ref?.current?.position?.set(
         index === 0 ? 0 : data.x * width,
         (data.y += dt * speed),
         -z,
       );
     // Rotate the object around
-    ref.current.rotation.set(
+    ref?.current?.rotation?.set(
       (data.rX += dt / data.spin),
       Math.sin(index * 1000 + state.clock.elapsedTime / 10) * Math.PI,
       (data.rZ += dt / data.spin),
@@ -64,28 +66,32 @@ function Bust({ index, z, speed }) {
     <Detailed ref={ref} distances={[0, 20, 40, 60, 80]}>
       <mesh
         geometry={nodes.close_up.geometry}
-        material={new THREE.MeshPhysicalMaterial({ color: "#FF00FF" })}
-        scale={[3, 3, 3]}
+        material={new THREE.MeshPhysicalMaterial({ color })}
+        scale={[3 * scaleMultiplier, 3 * scaleMultiplier, 3 * scaleMultiplier]}
+      />
+      <mesh
+        geometry={nodes.close_up.geometry}
+        material={new THREE.MeshPhysicalMaterial({ color })}
+        scale={[7 * scaleMultiplier, 7 * scaleMultiplier, 7 * scaleMultiplier]}
+      />
+      <mesh
+        geometry={nodes.close_up.geometry}
+        material={new THREE.MeshPhysicalMaterial({ color })}
+        scale={[5 * scaleMultiplier, 5 * scaleMultiplier, 5 * scaleMultiplier]}
       />
       <mesh
         geometry={nodes.medium.geometry}
-        material={new THREE.MeshPhysicalMaterial({ color: "#00FFFF" })}
-        scale={[7, 7, 7]}
-      />
-      <mesh
-        geometry={nodes.medium.geometry}
-        material={new THREE.MeshPhysicalMaterial({ color: "#E30B5C" })}
-        scale={[5, 5, 5]}
+        material={new THREE.MeshPhysicalMaterial({ color })}
+        scale={[6 * scaleMultiplier, 6 * scaleMultiplier, 6 * scaleMultiplier]}
       />
       <mesh
         geometry={nodes.far.geometry}
-        material={new THREE.MeshPhysicalMaterial({ color: "#FFB100" })}
-        scale={[6, 6, 6]}
-      />
-      <mesh
-        geometry={nodes.far.geometry}
-        material={new THREE.MeshPhysicalMaterial({ color: "#FF7F50" })}
-        scale={[6, 6, 6]}
+        material={new THREE.MeshPhysicalMaterial({ color })}
+        scale={[
+          10 * scaleMultiplier,
+          10 * scaleMultiplier,
+          10 * scaleMultiplier,
+        ]}
       />
     </Detailed>
   );
@@ -96,7 +102,14 @@ export default function Busts({
   count = 40,
   depth = 80,
   easing = (x) => Math.sqrt(1 - Math.pow(x - 1, 2)),
+  scaleMultiplier = 1,
 }) {
+  const colorOptions = ["#0802A3", "#FF4B91", "#FF7676", "#FFCD4B"];
+  const randomColor = () =>
+    colorOptions[Math.floor(Math.random() * colorOptions.length)];
+
+  const randomSpeed = () => Math.random() * speed + 0.5;
+
   return (
     // No need for antialias (faster), dpr clamps the resolution to 1.5 (also faster than full resolution)
     <Canvas
@@ -108,21 +121,21 @@ export default function Busts({
       <color attach="background" args={["#8F58FF"]} />
       <spotLight
         position={[10, 20, 10]}
-        penumbra={1}
+        penumbra={0.5}
         intensity={3}
-        color="blue"
+        color="orange"
       />
       {/* Using cubic easing here to spread out objects a little more interestingly, i wanted a sole big object up front ... */}
       {Array.from(
         { length: count },
-        (_, i) => <Bust key={i} index={i} z={Math.round(easing(i / count) * depth)} speed={speed} /> /* prettier-ignore */,
+        (_, i) => <Bust key={i} index={i} z={Math.round(easing(i / count) * depth)} speed={randomSpeed()} color={randomColor()} scaleMultiplier={scaleMultiplier} /> /* prettier-ignore */,
       )}
       <Environment preset="sunset" />
       {/* Multisampling (MSAA) is WebGL2 antialeasing, we don't need it (faster) */}
       <EffectComposer multisampling={0}>
         <DepthOfField
           target={[0, 0, 60]}
-          focalLength={0.8}
+          focalLength={1}
           bokehScale={20}
           height={700}
         />
